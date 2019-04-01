@@ -1,0 +1,40 @@
+---
+- name: Create postgres user for graphite
+  become_user: postgres
+  postgresql_user:
+    name: "{{ graphite_psql_user }}"
+    password: "{{ graphite_psql_pwd }}"
+
+- name: Create a new database
+  become_user: postgres
+  postgresql_db:
+    name: graphite
+    owner: graphite
+
+- name: Update graphite settings
+  template:
+    src: local_settings.py.j2
+    dest: /etc/graphite/local_settings.py
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Graphite db migrate
+  command: graphite-manage migrate auth
+
+- name: Install pexpect
+  pip:
+    name: pexpect==4.6.0
+
+- name: Clone dbsync pexpect script
+  template:
+    src: dbsync.py.j2
+    dest: /tmp/dbsync.py
+    owner: root
+    group: root
+    mode: 0644
+
+- name: try dbsync
+  command: python /tmp/dbsync.py
+  ignore_errors: yes # Hack: Bad practise. We should fix this
+  

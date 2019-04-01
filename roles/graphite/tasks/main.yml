@@ -1,0 +1,8 @@
+---
+- import_tasks: install_binaries.yml
+
+- import_tasks: db_config.yml
+
+- import_tasks: graphite_config.yml
+
+- import_tasks: apache_config.yml

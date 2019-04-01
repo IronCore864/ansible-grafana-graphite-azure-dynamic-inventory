@@ -1,0 +1,31 @@
+---
+- name: Update grahite carbon config
+  lineinfile:
+    path: /etc/default/graphite-carbon
+    regexp: '^CARBON_CACHE_ENABLED='
+    line: 'CARBON_CACHE_ENABLED=true'
+
+- name: Update grahite carbon config
+  lineinfile:
+    path: /etc/carbon/carbon.conf
+    regexp: '^ENABLE_LOGROTATION ='
+    line: 'ENABLE_LOGROTATION = True'
+
+- name: Setup storage schema config
+  template:
+    src: storage-schemas.conf.j2
+    dest: /etc/carbon/storage-schemas.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Setup storage aggregation config
+  copy:
+    remote_src: yes
+    src: /usr/share/doc/graphite-carbon/examples/storage-aggregation.conf.example
+    dest: /etc/carbon/storage-aggregation.conf
+
+- name: Restart service carbon-cache
+  service:
+    name: carbon-cache
+    state: restarted

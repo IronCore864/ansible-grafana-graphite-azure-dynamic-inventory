@@ -1,0 +1,7 @@
+---
+- hosts: azure 
+  become: yes
+  roles:
+    - grafana
+    - graphite
+    - grafana_datasource

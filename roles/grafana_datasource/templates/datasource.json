@@ -1,0 +1,7 @@
+{
+    "name": "graphite",
+    "type": "graphite",
+    "url": "http://localhost:8080",
+    "access": "proxy",
+    "basicAuth": false
+}

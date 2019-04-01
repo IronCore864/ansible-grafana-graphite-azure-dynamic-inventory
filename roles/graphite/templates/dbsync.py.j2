@@ -1,0 +1,18 @@
+import sys
+
+import pexpect
+
+p = pexpect.spawn("graphite-manage syncdb")
+
+p.logfile = sys.stdout 
+
+p.expect(r"Would you like to create one now\? \(yes\/no\): ")
+p.sendline("yes")
+p.expect(r"Username \(leave blank to use '.*'\): ")
+p.sendline("{{ graphite_psql_user }}")
+p.expect(r"Email address: ")
+p.sendline("admin@admin.com")
+p.expect(r"Password: ")
+p.sendline("{{ graphite_psql_pwd }}")
+p.expect(r"Password \(again\): ")
+p.sendline("{{ graphite_psql_pwd }}")

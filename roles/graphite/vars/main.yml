@@ -1,0 +1,3 @@
+graphite_psql_user: graphite
+graphite_psql_pwd: password
+psql_host: 127.0.0.1

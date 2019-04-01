@@ -1,0 +1,44 @@
+---
+- name: Apache graphite config
+  template:
+    src: apache2-graphite.conf.j2
+    dest: /etc/apache2/sites-available/apache2-graphite.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Apache grafana config
+  template:
+    src: apache2-grafana.conf.j2
+    dest: /etc/apache2/sites-available/apache2-grafana.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Apache ports config
+  template:
+    src: ports.conf.j2
+    dest: /etc/apache2/ports.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Enable proxy mod
+  command: a2enmod proxy
+
+- name: Enable proxy_http mod
+  command: a2enmod proxy_http
+
+- name: Disable default site
+  command: a2dissite 000-default
+
+- name: Enable graphite site
+  command: a2ensite apache2-graphite
+
+- name: Enable grafana site
+  command: a2ensite apache2-grafana
+
+- name: Restart service apache2
+  service:
+    name: apache2
+    state: restarted

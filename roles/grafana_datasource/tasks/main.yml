@@ -1,0 +1,50 @@
+---
+- name: Create graphite datasource
+  grafana_datasource:
+    name: "datasource-graphite"
+    grafana_url: "http://{{ ansible_ssh_host }}"
+    grafana_user: "admin"
+    grafana_password: "{{ grafana_pwd }}"
+    ds_type: "graphite"
+    url: "http://{{ ansible_ssh_host }}:8080"
+
+- name: Add Graphite datasource
+  uri:
+    url: http://{{ ansible_ssh_host }}/api/datasources
+    method: POST
+    body: "{{ lookup('template', 'datasource.json') }}"
+    body_format: json
+    user: "admin"
+    password: "{{ grafana_pwd }}"
+    force_basic_auth: yes
+    status_code: 200, 409 # Allow "Data source with same name already exists"
+    headers:
+      Accept: "application/json"
+      Content-Type: "application/json"
+
+- name: Add Spark monitoring dashboard
+  uri:
+    url: http://{{ ansible_ssh_host }}/api/dashboards/db
+    method: POST
+    body: "{{ lookup('template', 'dashboard.json') }}"
+    body_format: json
+    user: "admin"
+    password: "{{ grafana_pwd }}"
+    force_basic_auth: yes
+    status_code: 200, 412 # Allow "The dashboard has been changed by someone else"
+    headers:
+      Accept: "application/json"
+      Content-Type: "application/json"
+
+- name: Change admin password
+  uri:
+    url: http://{{ ansible_ssh_host }}/api/admin/users/1/password
+    method: PUT
+    body: "{\"password\":\"{{ grafana_new_pwd }}\"}"
+    body_format: json
+    user: "admin"
+    password: "{{ grafana_pwd }}"
+    force_basic_auth: yes
+    headers:
+      Accept: "application/json"
+      Content-Type: "application/json"

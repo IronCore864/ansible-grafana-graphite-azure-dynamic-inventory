@@ -1,0 +1,6 @@
+---
+- name: Update repositories cache and install graphite and dependencies
+  apt:
+    name: [python-pip=8.1.1-2ubuntu0.4, graphite-web=0.9.15+debian-1, graphite-carbon=0.9.15-1, 
+        postgresql=9.5+173ubuntu0.2, libpq-dev, python-psycopg2, apache2=2.4.18-2ubuntu3.9, libapache2-mod-wsgi]
+    update_cache: yes
